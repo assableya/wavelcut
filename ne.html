@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wavel Cut - AI-Powered Video Translation & Editing</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: #ffffff;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0c4a6e 100%);
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(6, 182, 212, 0.2);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            font-size: 1.75rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #06b6d4, #0891b2, #0e7490);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: #cbd5e1;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: #06b6d4;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 50%;
+            background: linear-gradient(90deg, #06b6d4, #0891b2);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .cta-btn {
+            background: linear-gradient(135deg, #06b6d4, #0891b2);
+            color: white;
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(6, 182, 212, 0.4);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding-top: 100px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 20%, rgba(6, 182, 212, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 80%, rgba(14, 116, 144, 0.1) 0%, transparent 50%);
+            z-index: -1;
+        }
+
+        .hero-content {
+            text-align: center;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 900;
+            background: linear-gradient(135deg, #ffffff, #06b6d4, #0891b2);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: #cbd5e1;
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-cta {
+            background: linear-gradient(135deg, #06b6d4, #0891b2);
+            color: white;
+            padding: 1.25rem 3rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(6, 182, 212, 0.3);
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .hero-cta:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(6, 182, 212, 0.4);
+        }
+
+        /* Section Styling */
+        .section {
+            padding: 5rem 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ffffff, #06b6d4);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: #cbd5e1;
+            font-size: 1.1rem;
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(6, 182, 212, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(6, 182, 212, 0.5);
+            box-shadow: 0 20px 40px rgba(6, 182, 212, 0.1);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #06b6d4, #0891b2);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #ffffff;
+        }
+
+        .feature-card p {
+            color: #cbd5e1;
+            line-height: 1.6;
+        }
+
+        /* AI Tools Grid */
+        .ai-tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .ai-tool {
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .ai-tool:hover {
+            background: rgba(30, 41, 59, 0.9);
+            border-color: rgba(6, 182, 212, 0.6);
+        }
+
+        .ai-tool-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #06b6d4, #0891b2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.25rem;
+        }
+
+        /* Demo Section */
+        .demo-section {
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 30px;
+            padding: 4rem 2rem;
+            margin: 2rem 0;
+            text-align: center;
+            border: 1px solid rgba(6, 182, 212, 0.2);
+        }
+
+        .demo-video {
+            background: rgba(15, 23, 42, 0.8);
+            border: 2px solid rgba(6, 182, 212, 0.3);
+            border-radius: 20px;
+            padding: 3rem;
+            margin: 2rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 300px;
+            font-size: 1.1rem;
+            color: #cbd5e1;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(14, 116, 144, 0.1));
+            border-radius: 30px;
+            padding: 4rem 2rem;
+            text-align: center;
+            border: 1px solid rgba(6, 182, 212, 0.2);
+        }
+
+        .cta-section h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ffffff, #06b6d4);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .benefits-list {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .benefit {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #cbd5e1;
+        }
+
+        .benefit::before {
+            content: '✓';
+            color: #06b6d4;
+            font-weight: bold;
+        }
+
+        /* Footer */
+        .footer {
+            background: rgba(15, 23, 42, 0.9);
+            border-top: 1px solid rgba(6, 182, 212, 0.2);
+            padding: 3rem 0 2rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            color: #06b6d4;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links a {
+            color: #cbd5e1;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: #06b6d4;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(6, 182, 212, 0.2);
+            color: #94a3b8;
+        }
+
+        /* Mobile Menu */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: #ffffff;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Upload Modal */
+        .upload-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            position: relative;
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+            color: #cbd5e1;
+            cursor: pointer;
+        }
+
+        .modal-close:hover {
+            color: #06b6d4;
+        }
+
+        .modal-title {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffffff, #06b6d4);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .drag-drop-area {
+            border: 2px dashed rgba(6, 182, 212, 0.5);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .drag-drop-area:hover, .drag-drop-area.drag-active {
+            background: rgba(6, 182, 212, 0.1);
+            border-color: #06b6d4;
+        }
+
+        .drag-drop-icon {
+            font-size: 2rem;
+            background: linear-gradient(135deg, #06b6d4, #0891b2);
+            border-radius: 12px;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+        }
+
+        .url-input {
+            margin: 1.5rem 0;
+        }
+
+        .url-field, .language-select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            border-radius: 10px;
+            background: rgba(15, 23, 42, 0.5);
+            color: #ffffff;
+            font-size: 1rem;
+        }
+
+        .url-field:focus, .language-select:focus {
+            outline: none;
+            border-color: #06b6d4;
+            box-shadow: 0 0 10px rgba(6, 182, 212, 0.3);
+        }
+
+        .options-section {
+            margin: 1.5rem 0;
+        }
+
+        .ai-features {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .ai-features label {
+            color: #cbd5e1;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .upload-cta, .process-cta {
+            background: linear-gradient(135deg, #06b6d4, #0891b2);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .upload-cta:hover, .process-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(6, 182, 212, 0.4);
+        }
+
+        .progress-container {
+            margin-top: 1.5rem;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(6, 182, 212, 0.2);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar::after {
+            content: '';
+            display: block;
+            height: 100%;
+            width: var(--progress, 0%);
+            background: linear-gradient(90deg, #06b6d4, #0891b2);
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            color: #cbd5e1;
+            text-align: center;
+            margin-top: 0.5rem;
+        }
+
+        .result-container {
+            margin-top: 1.5rem;
+            text-align: center;
+        }
+
+        .metadata {
+            color: #cbd5e1;
+            margin: 1rem 0;
+            text-align: left;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .ai-tools-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .benefits-list {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .ai-features {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .ai-tools-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cta-section h2 {
+                font-size: 2rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in {
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .float-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav container">
+            <a href="#" class="logo">Wavel Cut</a>
+            <ul class="nav-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#ai-tools">AI Tools</a></li>
+                <li><a href="#demo">Demo</a></li>
+                <li><a href="#pricing">Pricing</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <a href="#try-now" class="cta-btn">Try Now</a>
+            <button class="mobile-menu-btn">☰</button>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content animate-fade-in">
+                <h1 class="float-animation">AI-Powered Video Translation</h1>
+                <p class="hero-subtitle">Transform your videos with cutting-edge AI technology. Download, translate, edit, and enhance videos from any platform with professional-grade results.</p>
+                <button class="hero-cta" id="upload-video-btn">Upload Video</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Upload Modal -->
+    <div class="upload-modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <h2 class="modal-title">Upload Your Video</h2>
+            <div class="upload-container">
+                <div class="drag-drop-area">
+                    <div class="drag-drop-icon">📤</div>
+                    <p>Drag & drop your video here or click to browse</p>
+                    <input type="file" accept="video/mp4,video/mov,video/mkv" class="file-input" style="display: none;">
+                </div>
+                <div class="url-input">
+                    <label>Or paste video URL (YouTube, Instagram, etc.)</label>
+                    <input type="url" class="url-field" placeholder="https://youtube.com/watch?v=...">
+                </div>
+                <div class="options-section">
+                    <label>Target Language</label>
+                    <select class="language-select">
+                        <option value="en">English</option>
+                        <option value="es">Spanish</option>
+                        <option value="fr">French</option>
+                        <option value="de">German</option>
+                        <option value="zh">Chinese</option>
+                        <option value="ru">Russian</option>
+                    </select>
+                    <div class="ai-features">
+                        <label><input type="checkbox" name="ai-feature" value="translation"> Translation</label>
+                        <label><input type="checkbox" name="ai-feature" value="subtitles"> Subtitles</label>
+                        <label><input type="checkbox" name="ai-feature" value="noise-removal"> Noise Removal</label>
+                        <label><input type="checkbox" name="ai-feature" value="background-removal"> Background Removal</label>
+                    </div>
+                </div>
+                <button class="upload-cta">Upload Video</button>
+                <div class="progress-container" style="display: none;">
+                    <div class="progress-bar"></div>
+                    <p class="progress-text">Uploading... 0%</p>
+                </div>
+                <div class="result-container" style="display: none;">
+                    <h3>Upload Successful!</h3>
+                    <div class="metadata"></div>
+                    <button class="process-cta">Process with Wavel AI</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <section id="features" class="section">
+        <div class="container">
+            <h2 class="section-title">Powerful Features</h2>
+            <p class="section-subtitle">Everything you need to create professional videos with AI assistance</p>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📥</div>
+                    <h3>Universal Video Download</h3>
+                    <p>Download videos from YouTube and all major social networks with one click. Support for all popular platforms and formats.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🌐</div>
+                    <h3>AI Translation & Dubbing</h3>
+                    <p>Translate videos into 50+ languages with natural voice dubbing and accurate subtitle generation powered by advanced AI.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">✂️</div>
+                    <h3>Smart Video Editing</h3>
+                    <p>Edit and enhance your videos with intuitive tools. Cut, trim, merge, and apply effects with professional results.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>4K Ultra HD Export</h3>
+                    <p>Export your videos in stunning 4K Ultra HD quality. Perfect for professional presentations and social media.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3>Social Media Optimization</h3>
+                    <p>Automatically resize and optimize your videos for different social media platforms with perfect aspect ratios.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Lightning Fast Processing</h3>
+                    <p>Process your videos quickly with our optimized AI algorithms. Get results in minutes, not hours.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Wavel AI Section -->
+    <section id="ai-tools" class="section">
+        <div class="container">
+            <h2 class="section-title">Advanced Wavel AI Tools</h2>
+            <p class="section-subtitle">Harness the power of artificial intelligence for professional video production</p>
+            <div class="ai-tools-grid">
+                <div class="ai-tool">
+                    <div class="ai-tool-icon">🎥</div>
+                    <h4>AI Video Generation</h4>
+                    <p>Create videos from text descriptions</p>
+                </div>
+                <div class="ai-tool">
+                    <div class="ai-tool-icon">🖼️</div>
+                    <h4>Background Removal</h4>
+                    <p>Automatic background detection & removal</p>
+                </div>
+                <div class="ai-tool">
+                    <div class="ai-tool-icon">👁️</div>
+                    <h4>Eye Contact Correction</h4>
+                    <p>Perfect eye contact in every frame</p>
+                </div>
+                <div class="ai-tool">
+                    <div class="ai-tool-icon">🔇</div>
+                    <h4>Noise Cleaning</h4>
+                    <p>Remove background noise & enhance audio</p>
+                </div>
+                <div class="ai-tool">
+                    <div class="ai-tool-icon">🗣️</div>
+                    <h4>Voice Synthesis</h4>
+                    <p>Natural voice generation in any language</p>
+                </div>
+                <div class="ai-tool">
+                    <div class="ai-tool-icon">🎨</div>
+                    <h4>Auto Enhancement</h4>
+                    <p>Intelligent color & lighting correction</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Demo Section -->
+    <section id="demo" class="section">
+        <div class="container">
+            <h2 class="section-title">See Wavel Cut in Action</h2>
+            <div class="demo-section">
+                <h3>Video Translation & Editing Demo</h3>
+                <div class="demo-video">
+                    🎬 Interactive Demo Coming Soon<br>
+                    <small>Experience real-time video translation and AI-powered editing</small>
+                </div>
+                <p>Watch how Wavel Cut transforms a regular video into a professionally translated and enhanced masterpiece in just minutes.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="section">
+        <div class="container">
+            <div class="cta-section">
+                <h2>Ready to Transform Your Videos?</h2>
+                <p>Join thousands of creators who trust Wavel Cut for professional video translation and editing</p>
+                <div class="benefits-list">
+                    <div class="benefit">Free trial available</div>
+                    <div class="benefit">No credit card required</div>
+                    <div class="benefit">50+ languages supported</div>
+                    <div class="benefit">4K Ultra HD export</div>
+                </div>
+                <a href="#try-now" class="hero-cta">Start Free Trial</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact" class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Wavel Cut</h3>
+                    <p>AI-powered video translation and editing platform for creators worldwide.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Features</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Video Download</a></li>
+                        <li><a href="#">AI Translation</a></li>
+                        <li><a href="#">Video Editing</a></li>
+                        <li><a href="#">4K Export</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>AI Tools</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Background Removal</a></li>
+                        <li><a href="#">Eye Contact Fix</a></li>
+                        <li><a href="#">Noise Cleaning</a></li>
+                        <li><a href="#">Voice Synthesis</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Support</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">API Documentation</a></li>
+                        <li><a href="#">Community</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Wavel Cut. All rights reserved. | Privacy Policy | Terms of Service</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Header scroll effect
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('.header');
+            if (window.scrollY > 100) {
+                header.style.background = 'rgba(15, 23, 42, 0.98)';
+            } else {
+                header.style.background = 'rgba(15, 23, 42, 0.95)';
+            }
+        });
+
+        // Animate elements on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-fade-in');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.feature-card, .ai-tool, .section-title').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Upload Modal Functionality
+        const uploadBtn = document.querySelector('#upload-video-btn');
+        const modal = document.querySelector('.upload-modal');
+        const closeBtn = modal.querySelector('.modal-close');
+        const dragDropArea = modal.querySelector('.drag-drop-area');
+        const fileInput = modal.querySelector('.file-input');
+        const uploadCta = modal.querySelector('.upload-cta');
+        const progressContainer = modal.querySelector('.progress-container');
+        const progressBar = modal.querySelector('.progress-bar');
+        const progressText = modal.querySelector('.progress-text');
+        const resultContainer = modal.querySelector('.result-container');
+        const urlField = modal.querySelector('.url-field');
+        const languageSelect = modal.querySelector('.language-select');
+        const aiFeatures = modal.querySelectorAll('input[name="ai-feature"]');
+
+        uploadBtn.addEventListener('click', () => {
+            modal.style.display = 'flex';
+        });
+
+        closeBtn.addEventListener('click', () => {
+            modal.style.display = 'none';
+            resetModal();
+        });
+
+        dragDropArea.addEventListener('click', () => fileInput.click());
+        dragDropArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dragDropArea.classList.add('drag-active');
+        });
+        dragDropArea.addEventListener('dragleave', () => {
+            dragDropArea.classList.remove('drag-active');
+        });
+        dragDropArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dragDropArea.classList.remove('drag-active');
+            fileInput.files = e.dataTransfer.files;
+        });
+
+        uploadCta.addEventListener('click', async () => {
+            const formData = new FormData();
+            const selectedFeatures = Array.from(aiFeatures)
+                .filter(checkbox => checkbox.checked)
+                .map(checkbox => checkbox.value);
+
+            if (fileInput.files.length > 0) {
+                formData.append('video', fileInput.files[0]);
+            } else if (urlField.value) {
+                formData.append('url', urlField.value);
+            } else {
+                alert('Please select a file or enter a URL');
+                return;
+            }
+
+            formData.append('language', languageSelect.value);
+            formData.append('features', JSON.stringify(selectedFeatures));
+
+            progressContainer.style.display = 'block';
+            uploadCta.disabled = true;
+
+            try {
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', '/api/upload', true);
+
+                xhr.upload.onprogress = (e) => {
+                    if (e.lengthComputable) {
+                        const percent = Math.round((e.loaded / e.total) * 100);
+                        progressBar.style.setProperty('--progress', `${percent}%`);
+                        progressText.textContent = `Uploading... ${percent}%`;
+                    }
+                };
+
+                xhr.onload = () => {
+                    const response = JSON.parse(xhr.responseText);
+                    if (xhr.status === 200 && response.success) {
+                        progressContainer.style.display = 'none';
+                        resultContainer.style.display = 'block';
+                        resultContainer.querySelector('.metadata').innerHTML = `
+                            <p><strong>Title:</strong> ${response.data.metadata.title}</p>
+                            <p><strong>Duration:</strong> ${response.data.metadata.duration}</p>
+                            <p><strong>Resolution:</strong> ${response.data.metadata.resolution}</p>
+                        `;
+                    } else {
+                        alert(response.message || 'Upload failed');
+                        resetModal();
+                    }
+                };
+
+                xhr.onerror = () => {
+                    alert('Upload failed due to network error');
+                    resetModal();
+                };
+
+                xhr.send(formData);
+            } catch (error) {
+                alert('Upload error: ' + error.message);
+                resetModal();
+            }
+        });
+
+        function resetModal() {
+            fileInput.value = '';
+            urlField.value = '';
+            languageSelect.value = 'en';
+            aiFeatures.forEach(checkbox => checkbox.checked = false);
+            progressContainer.style.display = 'none';
+            resultContainer.style.display = 'none';
+            uploadCta.disabled = false;
+            progressBar.style.setProperty('--progress', '0%');
+            progressText.textContent = 'Uploading... 0%';
+        }
+    </script>
+</body>
+</html>

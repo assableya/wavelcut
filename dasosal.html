@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wavel Cut - AI Video Translation & Editing</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0c4a6e 100%);
+            color: #ffffff;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(6, 182, 212, 0.2);
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.75rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #06b6d4, #0891b2);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Try Now Button */
+        .try-now-btn {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 50%, #0891b2 100%);
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 8px 25px rgba(6, 182, 212, 0.3);
+        }
+
+        .try-now-btn:hover {
+            transform: scale(1.05) translateY(-2px);
+            box-shadow: 0 15px 40px rgba(6, 182, 212, 0.4);
+        }
+
+        /* Main Content */
+        .hero {
+            text-align: center;
+            padding: 4rem 0;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #ffffff, #06b6d4);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: #cbd5e1;
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .modal-container {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .modal-header h2 {
+            background: linear-gradient(135deg, #ffffff, #06b6d4);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: #cbd5e1;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: rgba(6, 182, 212, 0.2);
+            color: #06b6d4;
+        }
+
+        /* Form Styles */
+        .form-step {
+            display: none;
+        }
+
+        .form-step.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #cbd5e1;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            border-radius: 10px;
+            color: #ffffff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #06b6d4;
+            box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.1);
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0;
+            cursor: pointer;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            margin-right: 0.5rem;
+        }
+
+        .form-actions {
+            margin-top: 2rem;
+        }
+
+        .btn-loading .btn-text {
+            display: none;
+        }
+
+        .btn-loading .btn-loader {
+            display: flex !important;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-left: 2px solid #ffffff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Status Cards */
+        .status-card {
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(6, 182, 212, 0.2);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(30, 41, 59, 0.8);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 1rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #06b6d4, #0891b2);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+
+        .days-count {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #06b6d4;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            display: block;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #06b6d4;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #94a3b8;
+        }
+
+        /* Alerts */
+        .alert {
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+
+        .alert-success {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #4ade80;
+        }
+
+        .alert-error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #f87171;
+        }
+
+        .alert-warning {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            color: #fbbf24;
+        }
+
+        /* Processing Status */
+        .processing-status {
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .processing-status h4 {
+            color: #06b6d4;
+            margin-bottom: 1rem;
+        }
+
+        /* Trial Info */
+        .trial-info {
+            text-align: center;
+            color: #94a3b8;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+        }
+
+        /* Hidden class */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .modal-container {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav container">
+            <div class="logo">Wavel Cut</div>
+            <div>
+                <button id="tryNowHeaderBtn" class="try-now-btn">Try Now</button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>AI-Powered Video Translation</h1>
+            <p>Transform your videos with cutting-edge AI technology. Download, translate, edit, and enhance videos from any platform.</p>
+            <button id="tryNowHeroBtn" class="try-now-btn">Start Free Trial</button>
+        </div>
+    </section>
+
+    <!-- Modal -->
+    <div id="tryNowModal" class="modal-overlay hidden">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2 id="modalTitle">Start Your Free Trial</h2>
+                <button class="modal-close" id="modalCloseBtn">&times;</button>
+            </div>
+            
+            <div class="modal-content">
+                <!-- Alerts Container -->
+                <div id="alertContainer"></div>
+
+                <!-- Step 1: Trial Signup -->
+                <div id="signupStep" class="form-step active">
+                    <form id="trialSignupForm">
+                        <div class="form-group">
+                            <label for="firstName">First Name *</label>
+                            <input type="text" id="firstName" name="firstName" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="lastName">Last Name *</label>
+                            <input type="text" id="lastName" name="lastName" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">Email Address *</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="company">Company (Optional)</label>
+                            <input type="text" id="company" name="company">
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="try-now-btn" id="startTrialBtn" style="width: 100%;">
+                                <span class="btn-text">Start Free Trial</span>
+                                <span class="btn-loader" style="display: none;">
+                                    <span class="spinner"></span> Creating Account...
+                                </span>
+                            </button>
+                        </div>
+                        
+                        <p class="trial-info">
+                            ✅ 14 days free • ✅ No credit card required • ✅ Cancel anytime
+                        </p>
+                    </form>
+                </div>
+
+                <!-- Step 2: Trial Dashboard -->
+                <div id="dashboardStep" class="form-step">
+                    <div class="status-card">
+                        <h3>Trial Status</h3>
+                        <div class="status-info">
+                            <span id="daysRemaining" class="days-count">14 days remaining</span>
+                            <div class="progress-bar">
+                                <div id="trialProgress" class="progress-fill"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="video-processor">
+                        <h3>Process Your First Video</h3>
+                        <form id="videoProcessForm">
+                            <div class="form-group">
+                                <label for="videoUrl">Video URL</label>
+                                <input type="url" id="videoUrl" name="videoUrl" placeholder="https://youtube.com/watch?v=..." required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="targetLanguage">Target Language</label>
+                                <select id="targetLanguage" name="targetLanguage" required>
+                                    <option value="">Select language...</option>
+                                    <option value="es">Spanish</option>
+                                    <option value="fr">French</option>
+                                    <option value="de">German</option>
+                                    <option value="pt">Portuguese</option>
+                                    <option value="it">Italian</option>
+                                    <option value="ja">Japanese</option>
+                                    <option value="ko">Korean</option>
+                                    <option value="zh">Chinese</option>
+                                    <option value="ar">Arabic</option>
+                                    <option value="hi">Hindi</option>
+                                    <option value="ru">Russian</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>AI Features</label>
+                                <div class="checkbox-group">
+                                    <label><input type="checkbox" name="features" value="translation" checked> AI Translation</label>
+                                    <label><input type="checkbox" name="features" value="subtitles" checked> Auto Subtitles</label>
+                                    <label><input type="checkbox" name="features" value="noise_removal"> Noise Removal</label>
+                                    <label><input type="checkbox" name="features" value="background_removal"> Background Removal</label>
+                                </div>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="submit" class="try-now-btn" id="processVideoBtn" style="width: 100%;">
+                                    <span class="btn-text">Process Video</span>
+                                    <span class="btn-loader" style="display: none;">
+                                        <span class="spinner"></span> Starting Process...
+                                    </span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Processing Status -->
+                    <div id="processingStatus" class="processing-status hidden">
+                        <h4>Processing Video...</h4>
+                        <div class="progress-bar">
+                            <div id="processingProgress" class="progress-fill"></div>
+                        </div>
+                        <p id="processingMessage">Initializing...</p>
+                    </div>
+
+                    <!-- Usage Statistics -->
+                    <div class="status-card">
+                        <h4>Usage Statistics</h4>
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <span class="stat-number" id="videosProcessed">0</span>
+                                <span class="stat-label">Videos Processed</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number" id="languagesUsed">0</span>
+                                <span class="stat-label">Languages Used</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number" id="featuresUsed">0</span>
+                                <span class="stat-label">Features Used</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // API Configuration
+        const API_BASE_URL = 'http://localhost:3000/api';
+        
+        // API Client Class
+        class WavelCutAPI {
+            constructor() {
+                this.token = localStorage.getItem('wavelcut_token');
+            }
+
+            setToken(token) {
+                this.token = token;
+                localStorage.setItem('wavelcut_token', token);
+            }
+
+            removeToken() {
+                this.token = null;
+                localStorage.removeItem('wavelcut_token');
+            }
+
+            async request(endpoint, options = {}) {
+                const url = `${API_BASE_URL}${endpoint}`;
+                const headers = {
+                    'Content-Type': 'application/json',
+                    ...options.headers
+                };
+
+                if (this.token) {
+                    headers['Authorization'] = `Bearer ${this.token}`;
+                }
+
+                try {
+                    const response = await fetch(url, {
+                        ...options,
+                        headers
+                    });
+
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(data.message || 'Request failed');
+                    }
+
+                    return data;
+                } catch (error) {
+                    console.error('API Error:', error);
+                    throw error;
+                }
+            }
+
+            // API Methods
+            async startTrial(userData) {
+                return this.request('/try-now', {
+                    method: 'POST',
+                    body: JSON.stringify(userData)
+                });
+            }
+
+            async getTrialStatus() {
+                return this.request('/trial/status');
+            }
+
+            async processVideo(videoData) {
+                return this.request('/video/process-url', {
+                    method: 'POST',
+                    body: JSON.stringify(videoData)
+                });
+            }
+
+            async getProcessingStatus(jobId) {
+                return this.request(`/video/status/${jobId}`);
+            }
+
+            async getHistory() {
+                return this.request('/video/history');
+            }
+        }
+
+        // UI Controller Class
+        class TryNowController {
+            constructor() {
+                this.api = new WavelCutAPI();
+                this.modal = document.getElementById('tryNowModal');
+                this.currentStep = 'signup';
+                this.processingJobId = null;
+                this.processingInterval = null;
+                
+                this.init();
+            }
+
+            init() {
+                this.attachEventListeners();
+                this.checkExistingSession();
+            }
+
+            attachEventListeners() {
+                // Try Now buttons
+                document.getElementById('tryNowHeaderBtn').addEventListener('click', () => this.openModal());
+                document.getElementById('tryNowHeroBtn').addEventListener('click', () => this.openModal());
+
+                // Modal close
+                document.getElementById('modalCloseBtn').addEventListener('click', () => this.closeModal());
+                this.modal.addEventListener('click', (e) => {
+                    if (e.target === this.modal) this.closeModal();
+                });
+
+                // Form submissions
+                document.getElementById('trialSignupForm').addEventListener('submit', (e) => this.handleTrialSignup(e));
+                document.getElementById('videoProcessForm').addEventListener('submit', (e) => this.handleVideoProcess(e));
+
+                // Escape key to close modal
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && !this.modal.classList.contains('hidden')) {
+                        this.closeModal();
+                    }
+                });
+            }
+
+            async checkExistingSession() {
+                if (this.api.token) {
+                    try {
+                        const response = await this.api.getTrialStatus();
+                        if (response.success && response.data.isActive) {
+                            this.currentStep = 'dashboard';
+                        }
+                    } catch (error) {
+                        this.api.removeToken();
+                    }
+                }
+            }
+
+            openModal() {
+                this.modal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+                this.showStep(this.currentStep);
+            }
+
+            closeModal() {
+                this.modal.classList.add('hidden');
+                document.body.style.overflow = 'auto';
+                
+                // Clear any processing intervals
+                if (this.processingInterval) {
+                    clearInterval(this.processingInterval);
+                    this.processingInterval = null;
+                }
+            }
+
+            showStep(step) {
+                // Hide all steps
+                document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
+                
+                // Show current step
+                const stepElement = document.getElementById(`${step}Step`);
+                if (stepElement) {
+                    stepElement.classList.add('active');
+                }
+
+                // Update modal title
+                const titles = {
+                    signup: 'Start Your Free Trial',
+                    dashboard: 'Wavel Cut Dashboard'
+                };
+                document.getElementById('modalTitle').textContent = titles[step] || titles.signup;
+
+                // Load dashboard data if needed
+                if (step === 'dashboard') {
+                    this.loadDashboardData();
+                }
+            }
+
+            async handleTrialSignup(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(e.target);
+                const userData = {
+                    firstName: formData.get('firstName'),
+                    lastName: formData.get('lastName'),
+                    email: formData.get('email'),
+                    company: formData.get('company') || undefined
+                };
+
+                const submitBtn = document.getElementById('startTrialBtn');
+                this.setButtonLoading(submitBtn, true);
+                this.clearAlerts();
+
+                try {
+                    const response = await this.api.startTrial(userData);
+                    
+                    if (response.success) {
+                        this.api.setToken(response.data.accessToken);
+                        this.showAlert('success', 'Trial activated successfully! Welcome to Wavel Cut!');
+                        
+                        setTimeout(() => {
+                            this.currentStep = 'dashboard';
+                            this.showStep('dashboard');
+                        }, 1500);
+                    }
+                } catch (error) {
+                    this.showAlert('error', error.message || 'Failed to start trial. Please try again.');
+                } finally {
+                    this.setButtonLoading(submitBtn, false);
+                }
+            }
+
+            async handleVideoProcess(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(e.target);
+                const features = Array.from(formData.getAll('features'));
+                
+                const videoData = {
+                    videoUrl: formData.get('videoUrl'),
+                    targetLanguage: formData.get('targetLanguage'),
+                    features
+                };
+
+                const submitBtn = document.getElementById('processVideoBtn');
+                this.setButtonLoading(submitBtn, true);
+                this.clearAlerts();
+
+                try {
+                    const response = await this.api.processVideo(videoData);
+                    
+                    if (response.success) {
+                        this.processingJobId = response.data.jobId;
+                        this.showAlert('success', 'Video processing started!');
+                        this.showProcessingStatus();
+                        this.startProcessingMonitor();
+                    }
+                } catch (error) {
+                    this.showAlert('error', error.message || 'Failed to start video processing.');
+                } finally {
+                    this.setButtonLoading(submitBtn, false);
+                }
+            }
+
+            async loadDashboardData() {
+                try {
+                    const response = await this.api.getTrialStatus();
+                    if (response.success) {
+                        this.updateTrialStatus(response.data);
+                        this.updateUsageStats(response.data.usageStats);
+                    }
+                } catch (error) {
+                    console.error('Failed to load dashboard data:', error);
+                }
+            }
+
+            updateTrialStatus(trialData) {
+                const daysEl = document.getElementById('daysRemaining');
+                const progressEl = document.getElementById('trialProgress');
+                
+                const daysRemaining = trialData.daysRemaining;
+                const progressPercent = Math.max(0, ((14 - daysRemaining) / 14) * 100);
+                
+                daysEl.textContent = `${daysRemaining} days remaining`;
+                progressEl.style.width = `${progressPercent}%`;
+
+                if (daysRemaining <= 3) {
+                    this.showAlert('warning', 'Your trial expires soon. Consider upgrading to continue using all features.');
+                }
+            }
+
+            updateUsageStats(stats) {
+                document.getElementById('videosProcessed').textContent = stats.videosProcessed || 0;
+                document.getElementById('languagesUsed').textContent = stats.languagesUsed?.length || 0;
+                document.getElementById('featuresUsed').textContent = stats.featuresUsed?.length || 0;
+            }
+
+            showProcessingStatus() {
+                const statusEl = document.getElementById('processingStatus');
+                statusEl.classList.remove('hidden');
+                
+                const progressEl = document.getElementById('processingProgress');
+                const messageEl = document.getElementById('processingMessage');
+                
+                progressEl.style.width = '0%';
+                messageEl.textContent = 'Initializing video processing...';
+            }
+
+            startProcessingMonitor() {
+                if (this.processingInterval) {
+                    clearInterval(this.processingInterval);
+                }
+
+                this.processingInterval = setInterval(async () => {
+                    try {
+                        const response = await this.api.getProcessingStatus(this.processingJobId);
+                        
+                        if (response.success) {
+                            const { status, progress, errorMessage } = response.data;
+                            
+                            const progressEl = document.getElementById('processingProgress');
+                            const messageEl = document.getElementById('processingMessage');
+                            
+                            progressEl.style.width = `${progress}%`;
+                            
+                            if (status === 'completed') {
+                                messageEl.innerHTML = '✅ Video processing completed! <a href="#" onclick="window.open(\'/api/video/download/' + this.processingJobId + '\')">Download Video</a>';
+                                clearInterval(this.processingInterval);
+                                this.showAlert('success', 'Your video is ready for download!');
+                                this.loadDashboardData(); // Refresh stats
+                            } else if (status === 'failed') {
+                                messageEl.textContent = `❌ Processing failed: ${errorMessage || 'Unknown error'}`;
+                                clearInterval(this.processingInterval);
+                                this.showAlert('error', 'Video processing failed. Please try again.');
+                            } else {
+                                const messages = {
+                                    pending: 'Queued for processing...',
+                                    processing: `Processing video... ${progress}% complete`
+                                };
+                                messageEl.textContent = messages[status] || 'Processing...';
+                            }
+                        }
+                    } catch (error) {
+                        console.error('Processing status check failed:', error);
+                        clearInterval(this.processingInterval);
+                        this.showAlert('error', 'Failed to check processing status.');
+                    }
+                }, 3000); // Check every 3 seconds
+            }
+
+            setButtonLoading(button, isLoading) {
+                if (isLoading) {
+                    button.classList.add('btn-loading');
+                    button.disabled = true;
+                } else {
+                    button.classList.remove('btn-loading');
+                    button.disabled = false;
+                }
+            }
+
+            showAlert(type, message) {
+                const container = document.getElementById('alertContainer');
+                const alert = document.createElement('div');
+                alert.className = `alert alert-${type}`;
+                alert.textContent = message;
+                
+                container.appendChild(alert);
+                
+                // Auto remove after 5 seconds
+                setTimeout(() => {
+                    if (alert.parentNode) {
+                        alert.parentNode.removeChild(alert);
+                    }
+                }, 5000);
+            }
+
+            clearAlerts() {
+                const container = document.getElementById('alertContainer');
+                container.innerHTML = '';
+            }
+        }
+
+        // Initialize the application when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            new TryNowController();
+        });
+
+        // Global error handler
+        window.addEventListener('unhandledrejection', (event) => {
+            console.error('Unhandled promise rejection:', event.reason);
+        });
+    </script>
+</body>
+</html
